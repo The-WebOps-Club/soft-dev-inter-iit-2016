@@ -1,5 +1,6 @@
 package example.com.alerto;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -44,6 +45,16 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }
+
+        if (id == R.id.action_contacts) {
+            startActivity(new Intent(MainActivity.this, ContactsActivity.class));
+            return true;
+        }
+
+        if (id == R.id.action_contacts_intent) {
+            startActivity(new Intent(MainActivity.this, ContactsIntentActivity.class));
             return true;
         }
 
