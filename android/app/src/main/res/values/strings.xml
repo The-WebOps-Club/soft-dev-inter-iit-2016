@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Alerto</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_contacts">ContactsActivity</string>
+    <string name="action_contacts">Add contacts</string>
+    <string name="title_activity_contacts_intent">ContactsIntentActivity</string>
+    <string name="action_contacts_intent">Contacts Intent</string>
 </resources>
