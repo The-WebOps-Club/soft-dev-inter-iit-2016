@@ -1,13 +1,18 @@
 package example.com.alerto;
 
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -19,9 +24,9 @@ import java.util.TimerTask;
 public class Maps extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    int lat = 21,lon = 80, i = 0;
+    int lat = 13,lon = 80, i = 0;
     Marker mapMarker;
-
+    MarkerOptions options;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +48,44 @@ public class Maps extends FragmentActivity implements OnMapReadyCallback {
      * installed Google Play services and returned to the app.
      */
 
+    public void animateMarker(final GoogleMap mGoogleMapObject, final Marker marker, final LatLng toPosition,
+                              final boolean hideMarker) {
+        final Handler handler = new Handler();
+        final long start = SystemClock.uptimeMillis();
+        Projection proj = mGoogleMapObject.getProjection();
+        Point startPoint = proj.toScreenLocation(marker.getPosition());
+        final LatLng startLatLng = proj.fromScreenLocation(startPoint);
+        final long duration = 500;
+
+        final Interpolator interpolator = new LinearInterpolator();
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                long elapsed = SystemClock.uptimeMillis() - start;
+                float t = interpolator.getInterpolation((float) elapsed
+                        / duration);
+                double lng = t * toPosition.longitude + (1 - t)
+                        * startLatLng.longitude;
+                double lat = t * toPosition.latitude + (1 - t)
+                        * startLatLng.latitude;
+                marker.setPosition(new LatLng(lat, lng));
+
+                if (t < 1.0) {
+                    // Post again 16ms later.
+                    handler.postDelayed(this, 16);
+                } else {
+                    if (hideMarker) {
+                        marker.setVisible(false);
+                    } else {
+                        marker.setVisible(true);
+                    }
+                }
+                mGoogleMapObject.moveCamera(CameraUpdateFactory.newLatLng(toPosition));
+            }
+        });
+    }
+
     public void callAsynchronousTask(final GoogleMap googleMap) {
         final Handler handler = new Handler();
         Timer timer = new Timer();
@@ -58,10 +101,9 @@ public class Maps extends FragmentActivity implements OnMapReadyCallback {
                                 @Override
                                 public void gotResult(String s) {
                                     // Add a marker in Sydney and move the camera
-                                    MarkerOptions options = new MarkerOptions();
-                                    if(mapMarker != null){
+                                    /*if(mapMarker != null){
                                         mapMarker.remove();
-                                    }
+                                    }*/
                                     // following four lines requires 'Google Maps Android API Utility Library'
                                     // https://developers.google.com/maps/documentation/android/utility/
                                     // I have used this to display the time as title for location markers
@@ -71,14 +113,15 @@ public class Maps extends FragmentActivity implements OnMapReadyCallback {
                                     options.icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon()));
                                     options.anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());*/
 
-                                    LatLng currentLatLng = new LatLng(lat+0.001*i, lon+0.001*i);
-                                    options.position(currentLatLng);
+                                    LatLng currentLatLng = new LatLng(lat+0.0001*i, lon+0.0001*i);
+                                    /*options.position(currentLatLng);
                                     mapMarker = googleMap.addMarker(options);
                                     //long atTime = mCurrentLocation.getTime();
                                     //mLastUpdateTime = DateFormat.getTimeInstance().format(new Date(atTime));
                                     mapMarker.setTitle("Here");
                                     Log.d("hhhhhhhhhhh", "Marker added.............................");
-                                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng,19));
+                                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng,19));*/
+                                    animateMarker(googleMap, mapMarker, currentLatLng, false);
                                     Log.d("hhhhhhhhhhh", "Zoom done.............................");
                                 }
                             });
@@ -97,7 +140,10 @@ public class Maps extends FragmentActivity implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
+        options = new MarkerOptions();
+        options.position(new LatLng(13, 80));
+        mapMarker = googleMap.addMarker(options);
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(13, 80), 15));
         callAsynchronousTask(googleMap);
         /*LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
