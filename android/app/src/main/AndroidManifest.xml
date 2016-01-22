@@ -24,12 +24,10 @@
         </activity>
         <activity
             android:name=".ContactsActivity"
-            android:label="@string/title_activity_contacts"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="@string/title_activity_contacts" />
         <activity
             android:name=".ContactsIntentActivity"
-            android:label="@string/title_activity_contacts_intent"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="@string/title_activity_contacts_intent" />
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
@@ -55,6 +53,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".AddContactsActivity"
+            android:label="@string/title_activity_add_contacts"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
