@@ -7,4 +7,6 @@
     <string name="action_contacts_intent">Contacts Intent</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_add_contacts">Add Contacts</string>
+    <string name="title_activity_gcmtest">GCMTestActivity</string>
+    <string name="action_gcmtest">GCMTest</string>
 </resources>
