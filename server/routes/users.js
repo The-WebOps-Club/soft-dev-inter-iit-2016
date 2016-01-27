@@ -9,7 +9,8 @@ function handleError(res, err) {
 }
 
 router.post('/create', function(req, res) {
-  User.findOne({username: req.body.username}, function(_user) {
+  User.findOne({username: req.body.username}, function(err, _user) {
+debugger;
     if(_user) {
       res.status(204).send('Invalid username');
     }
