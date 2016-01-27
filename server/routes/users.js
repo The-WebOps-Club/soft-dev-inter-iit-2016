@@ -8,9 +8,13 @@ function handleError(res, err) {
   return res.status(500).send(err);
 }
 
+// Creates user
 router.post('/create', function(req, res) {
   User.findOne({username: req.body.username}, function(err, _user) {
-debugger;
+    /**
+     * req.body - username, phoneNumber, gcmId
+     */
+    debugger;
     if(_user) {
       res.status(204).send('Invalid username');
     }
@@ -22,6 +26,15 @@ debugger;
   });
 });
 
+// Returns all users
+router.get('/', function(req, res) {
+  User.find({}, function(err, users) {
+    if (err) { return handleError(res, err); }
+    res.status(200).json(users);
+  });
+});
+
+// Returns particular user
 router.get('/:id', function(req, res) {
   User.findById(req.params.id, function(err, user) {
     if (err) { return handleError(res, err); }
@@ -30,6 +43,7 @@ router.get('/:id', function(req, res) {
   });
 });
 
+// Adds a user as a contact
 router.post('/:id/contacts/add', function(req, res) {
   User.findById(req.params.id, function(err, user) {
     if (err) { return handleError(res, err); }
@@ -42,6 +56,22 @@ router.post('/:id/contacts/add', function(req, res) {
   });
 });
 
+// Updates GCM Id
+router.post('/:id/gcmId', function(req, res) {
+  /**
+   * req.body.gcmId - GCM Id of the user
+   */
+  User.findById(req.params.id, function(err, user) {
+    if (err) { return handleError(res, err); }
+    if(!user) { return res.status(404).send('Not Found'); }
+
+    user.gcmId = req.body.gcmId;
+    user.save();
+    res.status(200).send('OK');
+  });
+});
+
+// Filters users by phone
 router.get('/filter/phone', function(req, res) {
   var phoneNumbers = req.query.phoneNumbers;
   User.find({phoneNumber:{
@@ -52,9 +82,15 @@ router.get('/filter/phone', function(req, res) {
   });
 });
 
+// Makes a request through a GCM push for all contacts
 router.post('/alert/request', function(req, res) {
-  // Sends GCM push notifications to all users
-  var data = {type:"REQUEST", from:req.body.userId};
+  /**
+   * req.body.users - List of contacts
+   * req.body.userId - User's ID
+   * req.body.location - User's location like : {'lat':43.2, 'lng':31.3}
+   */
+  var data = {type:"REQUEST", from:req.body.userId, fromLocation: req.body.location,
+              radius: settings.general.NOTIFICATION_RADIUS};
   User.find({_id:{
     $in: req.body.users
   }}, function(err, users) {
@@ -64,9 +100,24 @@ router.post('/alert/request', function(req, res) {
   });
 });
 
+// router.post('/alert/locate', function(req, res) {
+//   var data = {type:"LOCATE", from:req.body.userId, fromLocation: req.body.location};
+//   User.findById(req.body.userId, function(err, user) {
+//     if (err) { return handleError(res, err); }
+//     user.details.location = data.fromLocation;
+//     util.gcmNotify([user], data);
+//     res.status(200).send('OK');
+//   });
+// });
+
+// Sends a GCM push to the user who needs help
 router.post('/alert/accept', function(req, res) {
-  // Sends a GCM push to the user who needs help
-  var data = {type:"ACCEPT", from:req.body.userId};
+  /**
+   * req.body.userId - User's ID
+   * req.body.location - User's location like : {'lat':43.2, 'lng':31.3}
+   */
+  var data = {type:"ACCEPT", from:req.body.userId, fromLocation: req.body.location,
+              radius: settings.general.NOTIFICATION_RADIUS};
   User.findById(req.body.userId, function(err, user) {
     if (err) { return handleError(res, err); }
     util.gcmNotify([user], data);
@@ -74,8 +125,8 @@ router.post('/alert/accept', function(req, res) {
   });
 });
 
+// Updates location of the user
 router.post('/:id/location', function(req, res) {
-  // Updates location of the user
   User.findById(req.params.id, function(err, user) {
     if(!user.details) {
       user.details = {};
@@ -87,8 +138,8 @@ router.post('/:id/location', function(req, res) {
   });
 });
 
+// Returns location of the user
 router.get('/:id/location', function(req, res) {
-  // Returns location of the user
   User.findById(req.params.id, function(err, user) {
     if(user.details) {
        var location = user.details.location;
