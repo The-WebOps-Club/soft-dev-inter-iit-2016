@@ -1,4 +1,5 @@
 var settings = require('./settings');
+var gcm = require('node-gcm-service');
 
 var gcmNotify = function(users, data){
     var regIds = [];

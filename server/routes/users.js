@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var User = require('../models').User;
 var util = require('./util');
+var settings = require('./settings');
 var _ = require('underscore');
 
 function handleError(res, err) {
@@ -95,8 +96,11 @@ router.post('/alert/request', function(req, res) {
     $in: req.body.users
   }}, function(err, users) {
     if (err) { return handleError(res, err); }
-    util.gcmNotify(users, data);
-    res.status(200).send('OK');
+    User.findById(req.body.userId,function(err,user){
+	    data.fromUser = user;
+	    util.gcmNotify(users, data);
+	    res.status(200).json({status: 'OK', data:data});
+    });
   });
 });
 
