@@ -64,6 +64,16 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
+        if (id == R.id.action_register) {
+            startActivity(new Intent(MainActivity.this, RegisterActivity.class));
+            return true;
+        }
+
+        if (id == R.id.action_regusers) {
+            startActivity(new Intent(MainActivity.this, RegUsersActivity.class));
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

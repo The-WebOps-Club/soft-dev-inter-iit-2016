@@ -9,4 +9,8 @@
     <string name="title_activity_add_contacts">Add Contacts</string>
     <string name="title_activity_gcmtest">GCMTestActivity</string>
     <string name="action_gcmtest">GCMTest</string>
+    <string name="title_activity_register">RegisterActivity</string>
+    <string name="action_register">Register</string>
+    <string name="title_activity_reg_users">RegUsersActivity</string>
+    <string name="action_regusers">Registered users</string>
 </resources>
