@@ -2,7 +2,6 @@ package example.com.alerto;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,11 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
-
-import example.com.alerto.contactloader.Contact;
 
 public class ContactRecyclerAdapter extends RecyclerView.Adapter<ContactRecyclerAdapter.ContactViewHolder> {
 
@@ -58,7 +54,11 @@ public class ContactRecyclerAdapter extends RecyclerView.Adapter<ContactRecycler
         ContactItem ci = itemList.get(i);
         contactViewHolder.nameText.setText(ci.getItemName());
         contactViewHolder.phoneText.setText(ci.getPhoneNo());
-        contactViewHolder.iconText.setText((ci.getItemName().substring(0, 1).toUpperCase()));
+        try {
+            contactViewHolder.iconText.setText((ci.getItemName().substring(0, 1).toUpperCase()));
+        }catch (Exception e) {
+            contactViewHolder.iconText.setText("S");
+        }
         contactViewHolder.iconBack.setColorFilter(Color.parseColor(colors[i % 16]));
         contactViewHolder.llUser.setOnClickListener(new View.OnClickListener() {
             @Override

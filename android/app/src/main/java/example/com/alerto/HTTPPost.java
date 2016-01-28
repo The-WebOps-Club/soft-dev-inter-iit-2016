@@ -36,6 +36,8 @@ public class HTTPPost {
                 HttpClient client = new DefaultHttpClient();
                 HttpConnectionParams.setConnectionTimeout(client.getParams(), 10000); //Timeout Limit
                 HttpResponse response;
+
+
                 try {
                     HttpPost post = new HttpPost(URL);
                     post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
