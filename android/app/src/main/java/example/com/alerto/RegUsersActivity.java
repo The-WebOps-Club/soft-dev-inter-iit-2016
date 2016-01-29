@@ -29,6 +29,7 @@ public class RegUsersActivity extends AppCompatActivity {
     SharedPreferences sharedpreferences;
     JSONArray contactsArray;
     ArrayList<ContactItem> list;
+    MainActivity mAc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,21 +40,41 @@ public class RegUsersActivity extends AppCompatActivity {
 
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         String usersarray = sharedpreferences.getString(Name, null);
+        userslist = new ArrayList<ContactItem>();
+        mAc = new MainActivity();
 
         try {
             if(usersarray!=null) {
                 contactsArray = new JSONArray(usersarray);
+                for(int i=0;i<contactsArray.length();i++)
+                {
+                    try {
+                        JSONObject obj = contactsArray.getJSONObject(i);
+                        ContactItem user = new ContactItem(obj.getString("username"), obj.getString("phoneNumber"));
+                        userslist.add(user);
+
+                    } catch (Exception E)
+                    {
+
+                    }
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
+//        Toast.makeText(getApplicationContext(), contactsArray.toString(), Toast.LENGTH_SHORT).show();
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
         contactRV = (RecyclerView) findViewById(R.id.usersRecycler);
         noContactAlert = (TextView) findViewById(R.id.noContactAlert);
         noContactAlert.setVisibility(View.GONE);
+
+        UsersRecyclerAdapter adapter = new UsersRecyclerAdapter(userslist, getApplicationContext(),mAc);
+
+        contactRV.setAdapter(adapter);
+        contactRV.setLayoutManager(new LinearLayoutManager(RegUsersActivity.this));
 
         userslist = new ArrayList<>();
         new AsyncGet(getApplicationContext(), "http://54.169.0.11:8000/users", new AsyncGet.AsyncResult() {
@@ -77,7 +98,7 @@ public class RegUsersActivity extends AppCompatActivity {
                         }
                     }
 
-                    ContactRecyclerAdapter adapter = new ContactRecyclerAdapter(userslist, getApplicationContext());
+                    UsersRecyclerAdapter adapter = new UsersRecyclerAdapter(userslist, getApplicationContext(), mAc);
                     contactRV.setAdapter(adapter);
                     contactRV.setLayoutManager(new LinearLayoutManager(RegUsersActivity.this));
                 } catch (JSONException e) {
@@ -98,6 +119,11 @@ public class RegUsersActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
     private void setRVContent(JSONArray contactsArray, ArrayList<ContactItem> list) {
         list = new ArrayList<>();
         for(int i=0; i<contactsArray.length(); i++)
@@ -114,9 +140,9 @@ public class RegUsersActivity extends AppCompatActivity {
         {
             noContactAlert.setVisibility(View.GONE);
         }
-        ContactRecyclerAdapter adapter = new ContactRecyclerAdapter(list, getApplicationContext());
+        UsersRecyclerAdapter adapter = new UsersRecyclerAdapter(list, getApplicationContext(), mAc);
         contactRV.setAdapter(adapter);
-        contactRV.setLayoutManager(new LinearLayoutManager(this));
+        contactRV.setLayoutManager(new LinearLayoutManager(RegUsersActivity.this));
 
     }
 
