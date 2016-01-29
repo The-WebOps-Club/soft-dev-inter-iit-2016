@@ -88,12 +88,16 @@ router.post('/alert/request', function(req, res) {
    * req.body.users - List of contacts
    * req.body.userId - User's ID
    * req.body.location - User's location like : {'lat':43.2, 'lng':31.3}
+   * req.body.message - Message to be delivered
    */
+  debugger;
+  console.log(req.body);
   var data = {type:"REQUEST", from:req.body.userId, fromLocation: req.body.location,
-              radius: settings.general.NOTIFICATION_RADIUS};
+              radius: settings.general.NOTIFICATION_RADIUS, message: req.body.message};
   User.find({_id:{
     $in: req.body.users
   }}, function(err, users) {
+    debugger;
     if (err) { return handleError(res, err); }
     util.gcmNotify(users, data);
     res.status(200).send('OK');
@@ -117,7 +121,7 @@ router.post('/alert/accept', function(req, res) {
    * req.body.location - User's location like : {'lat':43.2, 'lng':31.3}
    */
   var data = {type:"ACCEPT", from:req.body.userId, fromLocation: req.body.location,
-              radius: settings.general.NOTIFICATION_RADIUS};
+              radius: settings.general.NOTIFICATION_RADIUS, message: req.body.message};
   User.findById(req.body.userId, function(err, user) {
     if (err) { return handleError(res, err); }
     util.gcmNotify([user], data);
