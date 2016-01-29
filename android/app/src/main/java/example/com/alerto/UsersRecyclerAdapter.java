@@ -2,7 +2,9 @@ package example.com.alerto;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,11 +12,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
-public class ContactRecyclerAdapter extends RecyclerView.Adapter<ContactRecyclerAdapter.ContactViewHolder> {
+import example.com.alerto.contactloader.Contact;
 
+public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdapter.ContactViewHolder> {
+
+    private JSONArray usersjson = new JSONArray();
     private List<ContactItem> itemList;
     Context c;
     private String[] colors = new String[]{
@@ -37,11 +47,24 @@ public class ContactRecyclerAdapter extends RecyclerView.Adapter<ContactRecycler
             "#3E2723"
 
     };
+    MainActivity mainActivity;
+    SharedPreferences sharedpreferences;
+    public static final String MyPREFERENCES = "FavPrefs" ;
+    public static final String Name = "favKey";
 
-    public ContactRecyclerAdapter(List<ContactItem> itemList, Context context) {
+    public UsersRecyclerAdapter(List<ContactItem> itemList, Context context, MainActivity mainActivity) {
         this.itemList = itemList;
         this.c = context;
-
+        this.mainActivity = mainActivity;
+        sharedpreferences = context.getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        String usersarray = sharedpreferences.getString(Name, null);
+        try {
+            if(usersarray!=null) {
+                usersjson = new JSONArray(usersarray);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -52,25 +75,37 @@ public class ContactRecyclerAdapter extends RecyclerView.Adapter<ContactRecycler
 
     @Override
     public void onBindViewHolder(ContactViewHolder contactViewHolder,final int i) {
-        ContactItem ci = itemList.get(i);
+        final ContactItem ci = itemList.get(i);
         contactViewHolder.nameText.setText(ci.getItemName());
         contactViewHolder.phoneText.setText(ci.getPhoneNo());
-        try {
-            contactViewHolder.iconText.setText((ci.getItemName().substring(0, 1).toUpperCase()));
-        }catch (Exception e) {
-            contactViewHolder.iconText.setText("S");
-        }
+        contactViewHolder.iconText.setText((ci.getItemName().substring(0, 1).toUpperCase()));
         contactViewHolder.iconBack.setColorFilter(Color.parseColor(colors[i % 16]));
         contactViewHolder.llUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(c.getApplicationContext(), MainActivity.class);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                c.startActivity(intent);
+                updateFavs(ci);
+                Intent intent = new Intent(c.getApplicationContext(), MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                c.startActivity(intent);
             }
         });
     }
 
+    public void updateFavs(ContactItem ci)
+    {
+        JSONObject obj=new JSONObject();
+        try {
+            obj.put("username",ci.getItemName());
+            obj.put("phoneNumber", ci.getPhoneNo());
+            usersjson.put(obj);
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.putString(Name, usersjson.toString());
+            editor.commit();
+            Toast.makeText(c.getApplicationContext(), usersjson.toString(), Toast.LENGTH_LONG).show();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public ContactViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
