@@ -31,19 +31,17 @@ public class PushLocation extends Service {
         }catch (Exception e ){
 
         }
-        Toast.makeText(getApplicationContext(),"Started",Toast.LENGTH_SHORT).show();
         locationUpdate = new LocationUpdate(PushLocation.this){
             @Override
             public void onLocationChanged(Location location) {
                 super.onLocationChanged(location);
-                Toast.makeText(PushLocation.this, "hhhhhhhh",Toast.LENGTH_SHORT).show();
                 List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
                 nameValuePairs.add(new BasicNameValuePair("location","{'lat':" + location.getLatitude() + ",'lng':" + location.getLongitude() + "}"));
                 String url = "http://54.169.0.11:8000/users/" + id + "/location";
                 new HTTPPost(url, nameValuePairs, PushLocation.this){
                     @Override
                     public void gotResult(String s){
-                        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT).show();
                     }
                 };
             }

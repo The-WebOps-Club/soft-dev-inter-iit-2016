@@ -179,10 +179,10 @@ public class MainActivity extends AppCompatActivity {
 //                                        e.printStackTrace();
 //                                    }
 //                                }
-//                                SharedPreferences sharedPreferences = getSharedPreferences("USER",0);
-//                                Intent intent = new Intent(MainActivity.this, PushLocation.class);
-//                                intent.putExtra("userid",sharedPreferences.getString("userid",""));
-//                                startService(intent);
+                                SharedPreferences sharedPreferences = getSharedPreferences("USER",0);
+                                Intent intent = new Intent(MainActivity.this, PushLocation.class);
+                                intent.putExtra("userid",sharedPreferences.getString("userid",""));
+                               startService(intent);
                             }
                         };
                         String usersstr = "";
