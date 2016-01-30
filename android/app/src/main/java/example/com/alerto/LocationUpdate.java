@@ -30,7 +30,7 @@ public class LocationUpdate implements GoogleApiClient.ConnectionCallbacks, Goog
     private GoogleApiClient mGoogleApiClient;
 
     // boolean flag to toggle periodic location updates
-    private boolean mRequestingLocationUpdates = false;
+    private boolean mRequestingLocationUpdates = true;
 
     private LocationRequest mLocationRequest;
 
@@ -59,6 +59,7 @@ public class LocationUpdate implements GoogleApiClient.ConnectionCallbacks, Goog
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
                     .build();
+            mGoogleApiClient.connect();
         }
     }
 

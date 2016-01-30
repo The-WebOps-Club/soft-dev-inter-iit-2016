@@ -2,10 +2,8 @@ package example.com.alerto;
 
 import android.app.Service;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
@@ -19,9 +17,26 @@ public class PushLocation extends Service {
     String id;
     public PushLocation() {
 
-        locationUpdate = new LocationUpdate(this){
+
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        // TODO: Return the communication channel to the service.
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+    public int onStartCommand (Intent intent, int flags, int startId) {
+        try {
+            id = (String) intent.getExtras().get("userid");
+        }catch (Exception e ){
+
+        }
+        Toast.makeText(getApplicationContext(),"Started",Toast.LENGTH_SHORT).show();
+        locationUpdate = new LocationUpdate(PushLocation.this){
             @Override
             public void onLocationChanged(Location location) {
+                super.onLocationChanged(location);
+                Toast.makeText(PushLocation.this, "hhhhhhhh",Toast.LENGTH_SHORT).show();
                 List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
                 nameValuePairs.add(new BasicNameValuePair("location","{'lat':" + location.getLatitude() + ",'lng':" + location.getLongitude() + "}"));
                 String url = "http://54.169.0.11:8000/users/" + id + "/location";
@@ -34,16 +49,7 @@ public class PushLocation extends Service {
             }
         };
         locationUpdate.googleConnect();
-        locationUpdate.togglePeriodicLocationUpdates();
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-    public int onStartCommand (Intent intent, int flags, int startId) {
-        id=(String) intent.getExtras().get("userid");
+        //locationUpdate.togglePeriodicLocationUpdates();
         return 0;
     }
 }
