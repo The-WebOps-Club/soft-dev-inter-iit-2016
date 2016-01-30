@@ -102,6 +102,7 @@ console.log(req.body);
     if (err) { return handleError(res, err); }
     User.findById(req.body.userId,function(err,user){
 	    data.fromUser = user;
+        if (user.details && user.details.radius) data.radius = user.details.radius;
 	    util.gcmNotify(users, data);
 	    res.status(200).json({status: 'OK', data:data});
     });
@@ -150,6 +151,7 @@ router.post('/:id/location', function(req, res) {
 router.post('/:id/radius', function(req, res) {
   /*
    *    send radius, id in post sets details.radius to radius
+   *    need to sanitize radius
    */
   User.findById(req.params.id, function(err, user) {
     if(!user.details) {
