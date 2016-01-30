@@ -107,6 +107,8 @@ public class Maps extends FragmentActivity implements OnMapReadyCallback {
                             new AsyncGet(getApplicationContext(), url, new AsyncGet.AsyncResult() {
                                 @Override
                                 public void gotResult(String s) {
+                                    if(s.length()<=1)
+                                        return;
                                     // Add a marker in Sydney and move the camera
                                     /*if(mapMarker != null){
                                         mapMarker.remove();
@@ -121,7 +123,7 @@ public class Maps extends FragmentActivity implements OnMapReadyCallback {
                                     options.anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());*/
                                     try {
                                         Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
-                                        JSONObject pos = new JSONObject(s);
+                                        JSONObject pos = new JSONObject(s.substring(1,s.length()-1));
                                         LatLng currentLatLng = new LatLng(pos.getLong("lat"), pos.getLong("lng"));
                                     /*options.position(currentLatLng);
                                     mapMarker = googleMap.addMarker(options);
