@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -224,6 +223,7 @@ public class MainActivity extends AppCompatActivity {
                         new HTTPPost(url, nameValuePairs, MainActivity.this) {
                             @Override
                             public void gotResult(String s) {
+                                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
                                 Toast.makeText(getApplicationContext(), "Alert sent!", Toast.LENGTH_LONG).show();
 //                                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
 //                                if (s.equals("")) {
