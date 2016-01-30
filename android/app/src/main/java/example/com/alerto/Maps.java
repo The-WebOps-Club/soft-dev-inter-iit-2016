@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -35,6 +36,7 @@ public class Maps extends FragmentActivity implements OnMapReadyCallback {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        trackUserId = getIntent().getStringExtra("id");
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -118,6 +120,7 @@ public class Maps extends FragmentActivity implements OnMapReadyCallback {
                                     options.icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon()));
                                     options.anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());*/
                                     try {
+                                        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
                                         JSONObject pos = new JSONObject(s);
                                         LatLng currentLatLng = new LatLng(pos.getLong("lat"), pos.getLong("lng"));
                                     /*options.position(currentLatLng);

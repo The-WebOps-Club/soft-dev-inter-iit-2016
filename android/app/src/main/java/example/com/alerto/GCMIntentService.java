@@ -17,8 +17,6 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import example.com.alerto.GCMBaseIntentService;
-
 
 public class GCMIntentService extends GCMBaseIntentService {
 
@@ -43,7 +41,7 @@ public class GCMIntentService extends GCMBaseIntentService {
     }
 
 
-    private void notify( String title, String text){
+    private void notify( String title, String text, String id){
         Log.i("title", title);
         Log.i("text", text);
         Uri sound_uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -59,6 +57,8 @@ public class GCMIntentService extends GCMBaseIntentService {
         Intent resultIntent = new Intent(this, AlertActivity.class);
         resultIntent.putExtra("title", title);
         resultIntent.putExtra("text", text);
+        resultIntent.putExtra("id", id);
+
 
 // The stack builder object will contain an artificial back stack for the
 // started Activity.
@@ -87,12 +87,13 @@ public class GCMIntentService extends GCMBaseIntentService {
     protected void onMessage(Context context, Intent intent) {
         Log.d(TAG, "onMessage - context: " + context);
         String msg = intent.getStringExtra("message");
-        String name="";
+        String name="",id="";
         String jst = intent.getStringExtra("fromUser");
         try {
             JSONObject obj = new JSONObject(jst);
             Toast.makeText(getApplicationContext(), obj.getString("username"), Toast.LENGTH_LONG).show();
             name = obj.getString("username");
+            id = obj.getString("_id");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -100,7 +101,7 @@ public class GCMIntentService extends GCMBaseIntentService {
            // JSONObject msgJSON = new JSONObject(msg);
             String text = msg;
             String title = "Help "+ name +"!!";
-            notify(title, text);
+            notify(title, text, id);
         }
         catch(Exception e) {
             e.printStackTrace();

@@ -30,14 +30,9 @@ public class AlertActivity extends AppCompatActivity {
             }
         });
         mapbutton = (Button) findViewById(R.id.mapbutton);
-        mapbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(AlertActivity.this, Maps.class));
-            }
-        });
 
-        Bundle bundle = getIntent().getExtras();
+
+        final Bundle bundle = getIntent().getExtras();
 
         if(bundle.getString("title")!= null)
         {
@@ -48,6 +43,14 @@ public class AlertActivity extends AppCompatActivity {
         {
             texttext.setText(bundle.getString("text"));
         }
+        mapbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AlertActivity.this, Maps.class);
+                intent.putExtra("id",bundle.getString("id"));
+                startActivity(intent);
+            }
+        });
     }
 
 }
