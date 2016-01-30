@@ -22,10 +22,11 @@
         android:textSize="24sp"
         android:textColor="#FF0000"/>
     <TextView
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="HELP"
+        android:textSize="20dp"
         android:gravity="center"
         android:id="@+id/textText" />
     <LinearLayout
@@ -38,17 +39,15 @@
             android:layout_margin="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Open Map"
-            android:background="@color/colorAccent"
-            android:textColor="#FFFFFF"
+            android:text="Locate"
+            android:textColor="@color/colorPrimary"
             android:id="@+id/mapbutton"
             android:layout_gravity="center_horizontal" />
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Accept for help"
-            android:background="@color/colorAccent"
-            android:textColor="#FFFFFF"
+            android:text="Help"
+            android:textColor="@color/colorPrimary"
             android:id="@+id/acceptbutton"
             android:layout_gravity="center_horizontal" />
     </LinearLayout>

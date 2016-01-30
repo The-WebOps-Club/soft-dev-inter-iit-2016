@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences sharedpreferences;
     JSONArray usersjson= new JSONArray();
     ArrayList<ContactItem> favlist;
+    String PROJECT_NUMBER="559026050350";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +80,29 @@ public class MainActivity extends AppCompatActivity {
         if(intent.hasExtra("widget")){
             popup_request();
         }
+        GCMClientManager pushClientManager = new GCMClientManager(MainActivity.this, PROJECT_NUMBER);
+        pushClientManager.registerIfNeeded(new GCMClientManager.RegistrationCompletedHandler() {
+            @Override
+            public void onSuccess(String registrationId, boolean isNewRegistration) {
+                SharedPreferences sharedPreferences = getSharedPreferences("USER", 0);
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+                nameValuePairs.add(new BasicNameValuePair("gcmId", registrationId));
+                String url = "http://54.169.0.11:8000/users/"+sharedPreferences.getString("userid", "")+"/gcmId";
+
+                new HTTPPost(url, nameValuePairs, MainActivity.this){
+                    @Override
+                    public void gotResult(String s){
+
+                    }
+                };
+            }
+
+            @Override
+            public void onFailure(String ex) {
+                super.onFailure(ex);
+                Toast.makeText(getApplicationContext(), "registration failed.", Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 
@@ -146,7 +170,32 @@ public class MainActivity extends AppCompatActivity {
                         SharedPreferences sharedPreferences = getSharedPreferences("USER", 0);
 
                         List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+                        List<NameValuePair> extraValuePairs = new ArrayList<NameValuePair>(2);
                         nameValuePairs.add(new BasicNameValuePair("userId", sharedPreferences.getString("userid", "")));
+                        new HTTPPost("http://54.169.0.11:8000/users/"+sharedPreferences.getString("userid", "")+"/gcmId", extraValuePairs, MainActivity.this) {
+                            @Override
+                            public void gotResult(String s) {
+                                Toast.makeText(getApplicationContext(), "Alert sent!", Toast.LENGTH_LONG).show();
+//                                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+//                                if (s.equals("")) {
+//                                    Toast.makeText(getApplicationContext(), "Username or Mobile Number already exists", Toast.LENGTH_SHORT).show();
+//                                } else {
+//                                    try {
+//                                        JSONObject jsonObject = new JSONObject(s);
+//                                        SharedPreferences sharedPreferences = getSharedPreferences("USER", 0);
+//                                        SharedPreferences.Editor editor = sharedPreferences.edit();
+//                                        editor.putString("userid", jsonObject.getString("_id"));
+//                                        editor.commit();
+//                                    } catch (JSONException e) {
+//                                        e.printStackTrace();
+//                                    }
+//                                }
+//                                SharedPreferences sharedPreferences = getSharedPreferences("USER",0);
+//                                Intent intent = new Intent(MainActivity.this, PushLocation.class);
+//                                intent.putExtra("userid",sharedPreferences.getString("userid",""));
+//                                startService(intent);
+                            }
+                        };
                         String usersstr = "";
                         for (int i = 0; i < usersjson.length(); i++) {
                             if (i == 0) {
@@ -190,10 +239,10 @@ public class MainActivity extends AppCompatActivity {
 //                                        e.printStackTrace();
 //                                    }
 //                                }
-                                SharedPreferences sharedPreferences = getSharedPreferences("USER",0);
-                                Intent intent = new Intent(MainActivity.this, PushLocation.class);
-                                intent.putExtra("userid",sharedPreferences.getString("userid",""));
-                                startService(intent);
+//                                SharedPreferences sharedPreferences = getSharedPreferences("USER",0);
+//                                Intent intent = new Intent(MainActivity.this, PushLocation.class);
+//                                intent.putExtra("userid",sharedPreferences.getString("userid",""));
+//                                startService(intent);
                             }
                         };
                     }
