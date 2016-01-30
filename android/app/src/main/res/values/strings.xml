@@ -13,4 +13,5 @@
     <string name="action_register">Register</string>
     <string name="title_activity_reg_users">RegUsersActivity</string>
     <string name="action_regusers">Registered users</string>
+    <string name="tv_label">Type an alert message:</string>
 </resources>
