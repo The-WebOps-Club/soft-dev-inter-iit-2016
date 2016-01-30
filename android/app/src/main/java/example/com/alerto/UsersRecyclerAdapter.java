@@ -78,7 +78,9 @@ public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdap
         final ContactItem ci = itemList.get(i);
         contactViewHolder.nameText.setText(ci.getItemName());
         contactViewHolder.phoneText.setText(ci.getPhoneNo());
-        contactViewHolder.iconText.setText((ci.getItemName().substring(0, 1).toUpperCase()));
+        if(ci.getItemName().length()>1) {
+            contactViewHolder.iconText.setText((ci.getItemName().substring(0, 1).toUpperCase()));
+        }
         contactViewHolder.iconBack.setColorFilter(Color.parseColor(colors[i % 16]));
         contactViewHolder.llUser.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,6 +99,7 @@ public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdap
         try {
             obj.put("username",ci.getItemName());
             obj.put("phoneNumber", ci.getPhoneNo());
+            obj.put("_id", ci.getId());
             usersjson.put(obj);
             SharedPreferences.Editor editor = sharedpreferences.edit();
             editor.putString(Name, usersjson.toString());

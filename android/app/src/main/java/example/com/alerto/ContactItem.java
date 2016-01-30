@@ -6,10 +6,12 @@ package example.com.alerto;
 public class ContactItem {
     protected String name;
     protected String phoneno;
+    protected String Id;
 
-    public ContactItem(String dname, String phoneno) {
+    public ContactItem(String dname, String phoneno, String Id) {
         this.name = dname;
         this.phoneno = phoneno;
+        this.Id = Id;
     }
 
     public String getItemName(){
@@ -18,6 +20,10 @@ public class ContactItem {
 
     public String getPhoneNo(){
         return phoneno;
+    }
+
+    public String getId(){
+        return Id;
     }
 }
 

@@ -50,13 +50,15 @@ public class GCMIntentService extends GCMBaseIntentService {
         //builder.setSound(alarmSound);
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                        .setSmallIcon( R.drawable.ic_cast_light )
+                        .setSmallIcon( R.mipmap.ic_launcher )
                         .setContentTitle( title )
                         .setContentText( text )
                         .setSound( sound_uri )
                         .setAutoCancel(true);
 // Creates an explicit intent for an Activity in your app
-        Intent resultIntent = new Intent(this, MainActivity.class);
+        Intent resultIntent = new Intent(this, AlertActivity.class);
+        resultIntent.putExtra("title", title);
+        resultIntent.putExtra("text", text);
 
 // The stack builder object will contain an artificial back stack for the
 // started Activity.
@@ -85,17 +87,19 @@ public class GCMIntentService extends GCMBaseIntentService {
     protected void onMessage(Context context, Intent intent) {
         Log.d(TAG, "onMessage - context: " + context);
         String msg = intent.getStringExtra("message");
-        String jst = intent.getStringExtra("user");
+        String name="";
+        String jst = intent.getStringExtra("fromUser");
         try {
             JSONObject obj = new JSONObject(jst);
-            Toast.makeText(getApplicationContext(), obj.getString("phoneNumber"), Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), obj.getString("username"), Toast.LENGTH_LONG).show();
+            name = obj.getString("username");
         } catch (JSONException e) {
             e.printStackTrace();
         }
         try {
            // JSONObject msgJSON = new JSONObject(msg);
             String text = msg;
-            String title = "Help !!";
+            String title = "Help "+ name +"!!";
             notify(title, text);
         }
         catch(Exception e) {

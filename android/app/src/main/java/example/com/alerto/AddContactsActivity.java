@@ -30,7 +30,7 @@ import java.util.ArrayList;
 
 public class AddContactsActivity extends ActionBarActivity {
     private static final int RESULT_PICK_CONTACT = 1;
-    public static final String MyPREFERENCES = "MyPrefs" ;
+    public static final String MyPREFERENCES = "USER";
     public static final String Name = "nameKey";
     SharedPreferences sharedpreferences;
     JSONArray contactsArray;
@@ -84,7 +84,7 @@ public class AddContactsActivity extends ActionBarActivity {
         {
             try {
                 JSONObject cono = contactsArray.getJSONObject(i);
-                ContactItem item = new ContactItem(cono.getString("name"), cono.getString("phone"));
+                ContactItem item = new ContactItem(cono.getString("name"), cono.getString("phone"), cono.getString("_id"));
                 list.add(item);
             } catch (JSONException e) {
                 e.printStackTrace();

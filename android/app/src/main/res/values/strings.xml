@@ -14,4 +14,5 @@
     <string name="title_activity_reg_users">Add a favorite....</string>
     <string name="action_regusers">Registered users</string>
     <string name="tv_label">Type an alert message:</string>
+    <string name="title_activity_alert">AlertActivity</string>
 </resources>

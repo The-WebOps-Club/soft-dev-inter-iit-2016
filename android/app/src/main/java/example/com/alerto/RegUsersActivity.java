@@ -50,7 +50,7 @@ public class RegUsersActivity extends AppCompatActivity {
                 {
                     try {
                         JSONObject obj = contactsArray.getJSONObject(i);
-                        ContactItem user = new ContactItem(obj.getString("username"), obj.getString("phoneNumber"));
+                        ContactItem user = new ContactItem(obj.getString("username"), obj.getString("phoneNumber"), obj.getString("_id"));
                         userslist.add(user);
 
                     } catch (Exception E)
@@ -89,7 +89,7 @@ public class RegUsersActivity extends AppCompatActivity {
                     {
                         try {
                             JSONObject obj = usersarray.getJSONObject(i);
-                            ContactItem user = new ContactItem(obj.getString("username"), obj.getString("phoneNumber"));
+                            ContactItem user = new ContactItem(obj.getString("username"), obj.getString("phoneNumber"), obj.getString("_id"));
                             userslist.add(user);
 
                         } catch (Exception E)
@@ -124,26 +124,26 @@ public class RegUsersActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    private void setRVContent(JSONArray contactsArray, ArrayList<ContactItem> list) {
-        list = new ArrayList<>();
-        for(int i=0; i<contactsArray.length(); i++)
-        {
-            try {
-                JSONObject cono = contactsArray.getJSONObject(i);
-                ContactItem item = new ContactItem(cono.getString("name"), cono.getString("phone"));
-                list.add(item);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        if(list.size()>0)
-        {
-            noContactAlert.setVisibility(View.GONE);
-        }
-        UsersRecyclerAdapter adapter = new UsersRecyclerAdapter(list, getApplicationContext(), mAc);
-        contactRV.setAdapter(adapter);
-        contactRV.setLayoutManager(new LinearLayoutManager(RegUsersActivity.this));
-
-    }
+//    private void setRVContent(JSONArray contactsArray, ArrayList<ContactItem> list) {
+//        list = new ArrayList<>();
+//        for(int i=0; i<contactsArray.length(); i++)
+//        {
+//            try {
+//                JSONObject cono = contactsArray.getJSONObject(i);
+//                ContactItem item = new ContactItem(cono.getString("name"), cono.getString("phone"), obj.getString("_id"));
+//                list.add(item);
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        if(list.size()>0)
+//        {
+//            noContactAlert.setVisibility(View.GONE);
+//        }
+//        UsersRecyclerAdapter adapter = new UsersRecyclerAdapter(list, getApplicationContext(), mAc);
+//        contactRV.setAdapter(adapter);
+//        contactRV.setLayoutManager(new LinearLayoutManager(RegUsersActivity.this));
+//
+//    }
 
 }

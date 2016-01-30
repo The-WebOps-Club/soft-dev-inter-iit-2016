@@ -6,8 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    LocationUpdate locationUpdate;
     private RecyclerView contactRV;
     private TextView noContactAlert;
     List<ContactItem> userslist;
@@ -46,8 +45,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        locationUpdate = new LocationUpdate(this);
-        locationUpdate.googleConnect();
 
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         String usersarray = sharedpreferences.getString(Name, null);
@@ -78,6 +75,11 @@ public class MainActivity extends AppCompatActivity {
                 popup_request();
             }
         });
+        Intent intent = getIntent();
+        if(intent.hasExtra("widget")){
+            popup_request();
+        }
+
     }
 
     @Override
@@ -141,35 +143,64 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         // get user input and set it to result
 //                        editTextMainScreen.setText(input.getText());
-//                        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-//                        nameValuePairs.add(new BasicNameValuePair("userId", nametextbox.getText().toString()));
-//                        nameValuePairs.add(new BasicNameValuePair("phoneNumber", phone));
-//                        nameValuePairs.add(new BasicNameValuePair("gcmId", registrationId));
-//                        String url = "http://54.169.0.11:8000/users/alert/request";
-//                        new HTTPPost(url, nameValuePairs, MainActivity.this) {
-//                            @Override
-//                            public void gotResult(String s) {
-////                                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
-////                                if (s.equals("")) {
-////                                    Toast.makeText(getApplicationContext(), "Username or Mobile Number already exists", Toast.LENGTH_SHORT).show();
-////                                } else {
-////                                    try {
-////                                        JSONObject jsonObject = new JSONObject(s);
-////                                        SharedPreferences sharedPreferences = getSharedPreferences("USER", 0);
-////                                        SharedPreferences.Editor editor = sharedPreferences.edit();
-////                                        editor.putString("userid", jsonObject.getString("_id"));
-////                                        editor.commit();
-////                                    } catch (JSONException e) {
-////                                        e.printStackTrace();
-////                                    }
-////                                }
-//                            }
-//                        };
+                        SharedPreferences sharedPreferences = getSharedPreferences("USER", 0);
+
+                        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+                        nameValuePairs.add(new BasicNameValuePair("userId", sharedPreferences.getString("userid", "")));
+                        String usersstr = "";
+                        for (int i = 0; i < usersjson.length(); i++) {
+                            if (i == 0) {
+                                try {
+                                    JSONObject obb = usersjson.getJSONObject(i);
+                                    usersstr += obb.getString("_id");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            else {
+                                try {
+                                    JSONObject obb = usersjson.getJSONObject(i);
+                                    usersstr += "," + obb.getString("_id");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                        Toast.makeText(getApplicationContext(), usersstr, Toast.LENGTH_LONG).show();
+                        nameValuePairs.add(new BasicNameValuePair("users",usersstr));
+                        nameValuePairs.add(new BasicNameValuePair("message", input.getText().toString()));
+                        nameValuePairs.add(new BasicNameValuePair("lat","31.77"));
+                        nameValuePairs.add(new BasicNameValuePair("lng","76.99"));
+                        String url = "http://54.169.0.11:8000/users/alert/request";
+                        new HTTPPost(url, nameValuePairs, MainActivity.this) {
+                            @Override
+                            public void gotResult(String s) {
+                                Toast.makeText(getApplicationContext(), "Alert sent!", Toast.LENGTH_LONG).show();
+//                                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+//                                if (s.equals("")) {
+//                                    Toast.makeText(getApplicationContext(), "Username or Mobile Number already exists", Toast.LENGTH_SHORT).show();
+//                                } else {
+//                                    try {
+//                                        JSONObject jsonObject = new JSONObject(s);
+//                                        SharedPreferences sharedPreferences = getSharedPreferences("USER", 0);
+//                                        SharedPreferences.Editor editor = sharedPreferences.edit();
+//                                        editor.putString("userid", jsonObject.getString("_id"));
+//                                        editor.commit();
+//                                    } catch (JSONException e) {
+//                                        e.printStackTrace();
+//                                    }
+//                                }
+                                SharedPreferences sharedPreferences = getSharedPreferences("USER",0);
+                                Intent intent = new Intent(MainActivity.this, PushLocation.class);
+                                intent.putExtra("userid",sharedPreferences.getString("userid",""));
+                                startService(intent);
+                            }
+                        };
                     }
                 })
                 .setNegativeButton("Cancel",
                         new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,	int id) {
+                            public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
                             }
                         });
@@ -186,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
         {
             try {
                 JSONObject cono = contactsArray.getJSONObject(i);
-                ContactItem item = new ContactItem(cono.getString("username"), cono.getString("phoneNumber"));
+                ContactItem item = new ContactItem(cono.getString("username"), cono.getString("phoneNumber"), cono.getString("_id"));
                 list.add(item);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -205,17 +236,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        locationUpdate.googleResume();
 
     }
 
     protected void onStart() {
-        locationUpdate.googleStart();
         super.onStart();
     }
 
     protected void onStop() {
-        locationUpdate.googleStop();
         super.onStop();
     }
 

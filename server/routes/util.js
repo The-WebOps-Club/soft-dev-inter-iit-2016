@@ -16,6 +16,7 @@ var gcmNotify = function(users, data){
     sender.setAPIKey(settings.gcm.apiKey);
     sender.sendMessage(message.toString(), regIds, true, function (err, res) {
         console.log(res);
+	console.log("Sent to " + regIds);
         if(err) console.log(err);
     });
 }
