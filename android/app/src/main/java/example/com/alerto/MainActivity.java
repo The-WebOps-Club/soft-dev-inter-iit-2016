@@ -53,6 +53,10 @@ public class MainActivity extends AppCompatActivity {
         noContactAlert = (TextView) findViewById(R.id.noContactAlert);
         noContactAlert.setVisibility(View.GONE);
 
+//        if(usersarray.length()==0)
+//        {
+//            noContactAlert.setVisibility(View.GONE);
+//        }
 
         try {
             if(usersarray!=null) {
@@ -79,29 +83,29 @@ public class MainActivity extends AppCompatActivity {
         if(intent.hasExtra("widget")){
             popup_request();
         }
-        GCMClientManager pushClientManager = new GCMClientManager(MainActivity.this, PROJECT_NUMBER);
-        pushClientManager.registerIfNeeded(new GCMClientManager.RegistrationCompletedHandler() {
-            @Override
-            public void onSuccess(String registrationId, boolean isNewRegistration) {
-                SharedPreferences sharedPreferences = getSharedPreferences("USER", 0);
-                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-                nameValuePairs.add(new BasicNameValuePair("gcmId", registrationId));
-                String url = "http://54.169.0.11:8000/users/"+sharedPreferences.getString("userid", "")+"/gcmId";
-
-                new HTTPPost(url, nameValuePairs, MainActivity.this){
-                    @Override
-                    public void gotResult(String s){
-
-                    }
-                };
-            }
-
-            @Override
-            public void onFailure(String ex) {
-                super.onFailure(ex);
-                Toast.makeText(getApplicationContext(), "registration failed.", Toast.LENGTH_SHORT).show();
-            }
-        });
+//        GCMClientManager pushClientManager = new GCMClientManager(MainActivity.this, PROJECT_NUMBER);
+//        pushClientManager.registerIfNeeded(new GCMClientManager.RegistrationCompletedHandler() {
+//            @Override
+//            public void onSuccess(String registrationId, boolean isNewRegistration) {
+//                SharedPreferences sharedPreferences = getSharedPreferences("USER", 0);
+//                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+//                nameValuePairs.add(new BasicNameValuePair("gcmId", registrationId));
+//                String url = "http://54.169.0.11:8000/users/"+sharedPreferences.getString("userid", "")+"/gcmId";
+//
+//                new HTTPPost(url, nameValuePairs, MainActivity.this){
+//                    @Override
+//                    public void gotResult(String s){
+//
+//                    }
+//                };
+//            }
+//
+//            @Override
+//            public void onFailure(String ex) {
+//                super.onFailure(ex);
+//                Toast.makeText(getApplicationContext(), "registration failed.", Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
     }
 
@@ -121,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(MainActivity.this, SettingsActivity.class));
             return true;
         }
 
@@ -161,30 +166,6 @@ public class MainActivity extends AppCompatActivity {
                         List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
                         List<NameValuePair> extraValuePairs = new ArrayList<NameValuePair>(2);
                         nameValuePairs.add(new BasicNameValuePair("userId", sharedPreferences.getString("userid", "")));
-                        new HTTPPost("http://54.169.0.11:8000/users/"+sharedPreferences.getString("userid", "")+"/gcmId", extraValuePairs, MainActivity.this) {
-                            @Override
-                            public void gotResult(String s) {
-                                Toast.makeText(getApplicationContext(), "Alert sent!", Toast.LENGTH_LONG).show();
-//                                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
-//                                if (s.equals("")) {
-//                                    Toast.makeText(getApplicationContext(), "Username or Mobile Number already exists", Toast.LENGTH_SHORT).show();
-//                                } else {
-//                                    try {
-//                                        JSONObject jsonObject = new JSONObject(s);
-//                                        SharedPreferences sharedPreferences = getSharedPreferences("USER", 0);
-//                                        SharedPreferences.Editor editor = sharedPreferences.edit();
-//                                        editor.putString("userid", jsonObject.getString("_id"));
-//                                        editor.commit();
-//                                    } catch (JSONException e) {
-//                                        e.printStackTrace();
-//                                    }
-//                                }
-                                SharedPreferences sharedPreferences = getSharedPreferences("USER",0);
-                                Intent intent = new Intent(MainActivity.this, PushLocation.class);
-                                intent.putExtra("userid",sharedPreferences.getString("userid",""));
-                               startService(intent);
-                            }
-                        };
                         String usersstr = "";
                         for (int i = 0; i < usersjson.length(); i++) {
                             if (i == 0) {
@@ -204,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                         }
-                        Toast.makeText(getApplicationContext(), usersstr, Toast.LENGTH_LONG).show();
+                        // Toast.makeText(getApplicationContext(), usersstr, Toast.LENGTH_LONG).show();
                         nameValuePairs.add(new BasicNameValuePair("users",usersstr));
                         nameValuePairs.add(new BasicNameValuePair("message", input.getText().toString()));
                         nameValuePairs.add(new BasicNameValuePair("lat","31.77"));
@@ -213,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
                         new HTTPPost(url, nameValuePairs, MainActivity.this) {
                             @Override
                             public void gotResult(String s) {
-                                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+                                // Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
                                 Toast.makeText(getApplicationContext(), "Alert sent!", Toast.LENGTH_LONG).show();
 //                                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
 //                                if (s.equals("")) {
@@ -229,10 +210,10 @@ public class MainActivity extends AppCompatActivity {
 //                                        e.printStackTrace();
 //                                    }
 //                                }
-//                                SharedPreferences sharedPreferences = getSharedPreferences("USER",0);
-//                                Intent intent = new Intent(MainActivity.this, PushLocation.class);
-//                                intent.putExtra("userid",sharedPreferences.getString("userid",""));
-//                                startService(intent);
+                                SharedPreferences sharedPreferences = getSharedPreferences("USER",0);
+                                Intent intent = new Intent(MainActivity.this, PushLocation.class);
+                                intent.putExtra("userid",sharedPreferences.getString("userid",""));
+                                startService(intent);
                             }
                         };
                     }

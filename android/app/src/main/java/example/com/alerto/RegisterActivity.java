@@ -111,11 +111,12 @@ public class RegisterActivity extends AppCompatActivity {
 //            Toast.makeText(getApplicationContext(), mPhoneNumber, Toast.LENGTH_LONG).show();
             phonetextbox.setText(mPhoneNumber);
         } catch (Exception E){
+
+
+        }
         SharedPreferences sharedPreferences = getSharedPreferences("USER",0);
         if(sharedPreferences.contains("userid")){
-            startActivity(new Intent(this, RegUsersActivity.class));
-        }
-
+            startActivity(new Intent(this, MainActivity.class));
         }
     }
 

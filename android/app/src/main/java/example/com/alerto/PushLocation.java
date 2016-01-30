@@ -41,7 +41,7 @@ public class PushLocation extends Service {
                 new HTTPPost(url, nameValuePairs, PushLocation.this){
                     @Override
                     public void gotResult(String s){
-                        Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT).show();
                     }
                 };
             }

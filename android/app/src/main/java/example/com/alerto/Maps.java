@@ -122,7 +122,7 @@ public class Maps extends FragmentActivity implements OnMapReadyCallback {
                                     options.icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon()));
                                     options.anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());*/
                                     try {
-                                        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+//                                        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
                                         JSONObject pos = new JSONObject(s.substring(1,s.length()-1));
                                         LatLng currentLatLng = new LatLng(pos.getLong("lat"), pos.getLong("lng"));
                                     /*options.position(currentLatLng);
@@ -153,13 +153,50 @@ public class Maps extends FragmentActivity implements OnMapReadyCallback {
 
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(final GoogleMap googleMap) {
         mMap = googleMap;
         options = new MarkerOptions();
-        options.position(new LatLng(13, 80));
-        mapMarker = googleMap.addMarker(options);
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(13, 80), 15));
-        callAsynchronousTask(googleMap);
+        String url = "http://54.169.0.11:8000/users/" + trackUserId + "/location";
+        new AsyncGet(getApplicationContext(), url, new AsyncGet.AsyncResult() {
+            @Override
+            public void gotResult(String s) {
+                if(s.length()<=1)
+                    return;
+                // Add a marker in Sydney and move the camera
+                                    /*if(mapMarker != null){
+                                        mapMarker.remove();
+                                    }*/
+                // following four lines requires 'Google Maps Android API Utility Library'
+                // https://developers.google.com/maps/documentation/android/utility/
+                // I have used this to display the time as title for location markers
+                // you can safely comment the following four lines but for this info
+                                    /*IconGenerator iconFactory = new IconGenerator(Maps.this);
+                                    iconFactory.setStyle(IconGenerator.STYLE_PURPLE);
+                                    options.icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon()));
+                                    options.anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());*/
+                try {
+                    // Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+                    JSONObject pos = new JSONObject(s.substring(1,s.length()-1));
+                    LatLng currentLatLng = new LatLng(pos.getLong("lat"), pos.getLong("lng"));
+                                    /*options.position(currentLatLng);
+                                    mapMarker = googleMap.addMarker(options);
+                                    //long atTime = mCurrentLocation.getTime();
+                                    //mLastUpdateTime = DateFormat.getTimeInstance().format(new Date(atTime));
+                                    mapMarker.setTitle("Here");
+                                    Log.d("hhhhhhhhhhh", "Marker added.............................");
+                                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng,19));*/
+                    options.position(currentLatLng);
+                    mapMarker = googleMap.addMarker(options);
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15));
+                    callAsynchronousTask(googleMap);
+                    Log.d("hhhhhhhhhhh", "Zoom done.............................");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
         /*LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));*/

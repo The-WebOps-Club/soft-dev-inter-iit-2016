@@ -104,7 +104,6 @@ public class UsersRecyclerAdapter extends RecyclerView.Adapter<UsersRecyclerAdap
             SharedPreferences.Editor editor = sharedpreferences.edit();
             editor.putString(Name, usersjson.toString());
             editor.commit();
-            Toast.makeText(c.getApplicationContext(), usersjson.toString(), Toast.LENGTH_LONG).show();
         } catch (JSONException e) {
             e.printStackTrace();
         }
