@@ -18,6 +18,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -27,6 +30,7 @@ public class Maps extends FragmentActivity implements OnMapReadyCallback {
     int lat = 13,lon = 80, i = 0;
     Marker mapMarker;
     MarkerOptions options;
+    String trackUserId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +38,7 @@ public class Maps extends FragmentActivity implements OnMapReadyCallback {
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
+
         mapFragment.getMapAsync(this);
     }
 
@@ -96,7 +101,7 @@ public class Maps extends FragmentActivity implements OnMapReadyCallback {
                 handler.post(new Runnable() {
                     public void run() {
                         try {
-                            String url = "http://www.google.com";
+                            String url = "http://54.169.0.11:8000/users/" + trackUserId + "/location";
                             new AsyncGet(getApplicationContext(), url, new AsyncGet.AsyncResult() {
                                 @Override
                                 public void gotResult(String s) {
@@ -112,8 +117,9 @@ public class Maps extends FragmentActivity implements OnMapReadyCallback {
                                     iconFactory.setStyle(IconGenerator.STYLE_PURPLE);
                                     options.icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon()));
                                     options.anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());*/
-
-                                    LatLng currentLatLng = new LatLng(lat+0.0001*i, lon+0.0001*i);
+                                    try {
+                                        JSONObject pos = new JSONObject(s);
+                                        LatLng currentLatLng = new LatLng(pos.getLong("lat"), pos.getLong("lng"));
                                     /*options.position(currentLatLng);
                                     mapMarker = googleMap.addMarker(options);
                                     //long atTime = mCurrentLocation.getTime();
@@ -121,8 +127,12 @@ public class Maps extends FragmentActivity implements OnMapReadyCallback {
                                     mapMarker.setTitle("Here");
                                     Log.d("hhhhhhhhhhh", "Marker added.............................");
                                     googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng,19));*/
-                                    animateMarker(googleMap, mapMarker, currentLatLng, false);
-                                    Log.d("hhhhhhhhhhh", "Zoom done.............................");
+                                        animateMarker(googleMap, mapMarker, currentLatLng, false);
+                                        Log.d("hhhhhhhhhhh", "Zoom done.............................");
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
                                 }
                             });
                         } catch (Exception e) {

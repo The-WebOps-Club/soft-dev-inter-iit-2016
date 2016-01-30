@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    LocationUpdate locationUpdate;
     private RecyclerView contactRV;
     private TextView noContactAlert;
     List<ContactItem> userslist;
@@ -43,8 +41,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        locationUpdate = new LocationUpdate(this);
-        locationUpdate.googleConnect();
 
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         String usersarray = sharedpreferences.getString(Name, null);
@@ -75,6 +71,11 @@ public class MainActivity extends AppCompatActivity {
                 popup_request();
             }
         });
+        Intent intent = getIntent();
+        if(intent.hasExtra("widget")){
+            popup_request();
+        }
+
     }
 
     @Override
@@ -178,17 +179,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        locationUpdate.googleResume();
 
     }
 
     protected void onStart() {
-        locationUpdate.googleStart();
         super.onStart();
     }
 
     protected void onStop() {
-        locationUpdate.googleStop();
         super.onStop();
     }
 
