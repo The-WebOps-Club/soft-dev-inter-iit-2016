@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var User = require('../models').User;
 var util = require('./util');
+var settings = require('./settings');
 var _ = require('underscore');
 
 function handleError(res, err) {
@@ -90,17 +91,20 @@ router.post('/alert/request', function(req, res) {
    * req.body.location - User's location like : {'lat':43.2, 'lng':31.3}
    * req.body.message - Message to be delivered
    */
-  debugger;
-  console.log(req.body);
-  var data = {type:"REQUEST", from:req.body.userId, fromLocation: req.body.location,
-              radius: settings.general.NOTIFICATION_RADIUS, message: req.body.message};
+	debugger;
+console.log(req.body);
+  var data = {type:"REQUEST", fromUserId:req.body.userId, fromUserLocation: {lat:req.body.lat,lng:req.body.lng},
+              radius: settings.general.NOTIFICATION_RADIUS};
   User.find({_id:{
     $in: req.body.users
   }}, function(err, users) {
-    debugger;
+	debugger;
     if (err) { return handleError(res, err); }
-    util.gcmNotify(users, data);
-    res.status(200).send('OK');
+    User.findById(req.body.userId,function(err,user){
+	    data.fromUser = user;
+	    util.gcmNotify(users, data);
+	    res.status(200).json({status: 'OK', data:data});
+    });
   });
 });
 
@@ -120,8 +124,8 @@ router.post('/alert/accept', function(req, res) {
    * req.body.userId - User's ID
    * req.body.location - User's location like : {'lat':43.2, 'lng':31.3}
    */
-  var data = {type:"ACCEPT", from:req.body.userId, fromLocation: req.body.location,
-              radius: settings.general.NOTIFICATION_RADIUS, message: req.body.message};
+  var data = {type:"ACCEPT", fromUserId:req.body.userId, fromUserLocation: req.body.location,
+              radius: settings.general.NOTIFICATION_RADIUS};
   User.findById(req.body.userId, function(err, user) {
     if (err) { return handleError(res, err); }
     util.gcmNotify([user], data);
