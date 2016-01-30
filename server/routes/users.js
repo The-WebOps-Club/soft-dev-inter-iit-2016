@@ -138,6 +138,22 @@ router.post('/:id/location', function(req, res) {
   });
 });
 
+// update user defined radius
+router.post('/:id/radius', function(req, res) {
+  /*
+   *    send radius, id in post sets details.radius to radius
+   */
+  User.findById(req.params.id, function(err, user) {
+    if(!user.details) {
+      user.details = {};
+    }
+    user.details.radius = req.body.radius;
+    user.markModified("details");
+    user.save();
+    res.status(200).send('OK');
+  });
+});
+
 // Returns location of the user
 router.get('/:id/location', function(req, res) {
   User.findById(req.params.id, function(err, user) {
