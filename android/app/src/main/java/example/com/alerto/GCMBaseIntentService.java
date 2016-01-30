@@ -235,6 +235,7 @@ public abstract class GCMBaseIntentService extends IntentService {
         }
         Log.v(TAG, "Acquiring wakelock");
         sWakeLock.acquire();
+        Log.d("Classname", className);
         intent.setClassName(context, className);
         context.startService(intent);
     }

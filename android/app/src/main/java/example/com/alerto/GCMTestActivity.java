@@ -9,7 +9,7 @@ import android.util.Log;
 import android.view.View;
 
 public class GCMTestActivity extends AppCompatActivity {
-    String PROJECT_NUMBER="567927802240";
+    String PROJECT_NUMBER="559026050350";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

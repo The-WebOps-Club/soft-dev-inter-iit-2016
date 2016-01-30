@@ -266,7 +266,7 @@ public final class GCMRegistrar {
     private static synchronized void setRetryBroadcastReceiver(Context context) {
         if (sRetryReceiver == null) {
             sRetryReceiver = new GCMBroadcastReceiver();
-            String category = context.getPackageName();
+            String category = "example.com.alerto";
             IntentFilter filter = new IntentFilter(
                     GCMConstants.INTENT_FROM_GCM_LIBRARY_RETRY);
             filter.addCategory(category);

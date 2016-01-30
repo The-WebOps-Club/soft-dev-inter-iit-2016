@@ -12,7 +12,9 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import example.com.alerto.GCMBaseIntentService;
@@ -22,7 +24,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
     public GCMIntentService() {
         super("559026050350");
-        GCMRegistrar.register(this, "559026050350");
+//        GCMRegistrar.register(this, "559026050350");
 
     }
 
@@ -83,11 +85,17 @@ public class GCMIntentService extends GCMBaseIntentService {
     protected void onMessage(Context context, Intent intent) {
         Log.d(TAG, "onMessage - context: " + context);
         String msg = intent.getStringExtra("message");
+        String jst = intent.getStringExtra("user");
         try {
-            Log.i("msg",msg);
-            JSONObject msgJSON = new JSONObject(msg);
-            String text = "Notif";
-            String title = "Notif-title";
+            JSONObject obj = new JSONObject(jst);
+            Toast.makeText(getApplicationContext(), obj.getString("phoneNumber"), Toast.LENGTH_LONG).show();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+           // JSONObject msgJSON = new JSONObject(msg);
+            String text = msg;
+            String title = "Help !!";
             notify(title, text);
         }
         catch(Exception e) {

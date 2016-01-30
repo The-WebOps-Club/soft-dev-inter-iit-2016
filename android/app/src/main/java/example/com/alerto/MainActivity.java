@@ -18,7 +18,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -138,6 +141,30 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         // get user input and set it to result
 //                        editTextMainScreen.setText(input.getText());
+//                        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+//                        nameValuePairs.add(new BasicNameValuePair("userId", nametextbox.getText().toString()));
+//                        nameValuePairs.add(new BasicNameValuePair("phoneNumber", phone));
+//                        nameValuePairs.add(new BasicNameValuePair("gcmId", registrationId));
+//                        String url = "http://54.169.0.11:8000/users/alert/request";
+//                        new HTTPPost(url, nameValuePairs, MainActivity.this) {
+//                            @Override
+//                            public void gotResult(String s) {
+////                                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+////                                if (s.equals("")) {
+////                                    Toast.makeText(getApplicationContext(), "Username or Mobile Number already exists", Toast.LENGTH_SHORT).show();
+////                                } else {
+////                                    try {
+////                                        JSONObject jsonObject = new JSONObject(s);
+////                                        SharedPreferences sharedPreferences = getSharedPreferences("USER", 0);
+////                                        SharedPreferences.Editor editor = sharedPreferences.edit();
+////                                        editor.putString("userid", jsonObject.getString("_id"));
+////                                        editor.commit();
+////                                    } catch (JSONException e) {
+////                                        e.printStackTrace();
+////                                    }
+////                                }
+//                            }
+//                        };
                     }
                 })
                 .setNegativeButton("Cancel",
