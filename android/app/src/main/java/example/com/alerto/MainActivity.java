@@ -124,16 +124,6 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
-        if (id == R.id.action_contacts) {
-            startActivity(new Intent(MainActivity.this, AddContactsActivity.class));
-            return true;
-        }
-
-        if (id == R.id.action_gcmtest) {
-            startActivity(new Intent(MainActivity.this, GCMTestActivity.class));
-            return true;
-        }
-
         if (id == R.id.action_register) {
             startActivity(new Intent(MainActivity.this, RegisterActivity.class));
             return true;
