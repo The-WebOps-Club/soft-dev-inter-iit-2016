@@ -89,6 +89,7 @@ router.post('/alert/request', function(req, res) {
    * req.body.users - List of contacts
    * req.body.userId - User's ID
    * req.body.location - User's location like : {'lat':43.2, 'lng':31.3}
+   * req.body.message - Message to be delivered
    */
 	debugger;
 console.log(req.body);
@@ -101,6 +102,7 @@ console.log(req.body);
     if (err) { return handleError(res, err); }
     User.findById(req.body.userId,function(err,user){
 	    data.fromUser = user;
+        if (user.details && user.details.radius) data.radius = user.details.radius;
 	    util.gcmNotify(users, data);
 	    res.status(200).json({status: 'OK', data:data});
     });
@@ -139,6 +141,23 @@ router.post('/:id/location', function(req, res) {
       user.details = {};
     }
     user.details.location = req.body.location;
+    user.markModified("details");
+    user.save();
+    res.status(200).send('OK');
+  });
+});
+
+// update user defined radius
+router.post('/:id/radius', function(req, res) {
+  /*
+   *    send radius, id in post sets details.radius to radius
+   *    need to sanitize radius
+   */
+  User.findById(req.params.id, function(err, user) {
+    if(!user.details) {
+      user.details = {};
+    }
+    user.details.radius = req.body.radius;
     user.markModified("details");
     user.save();
     res.status(200).send('OK');
