@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -28,7 +27,7 @@ import java.util.TimerTask;
 public class Maps extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    int lat = 13,lon = 80, i = 0;
+    int lat = 13,lon = 80;
     Marker mapMarker;
     MarkerOptions options;
     String trackUserId;
@@ -145,7 +144,6 @@ public class Maps extends FragmentActivity implements OnMapReadyCallback {
                         }
                     }
                 });
-                i++;
             }
         };
         timer.schedule(doAsynchronousTask, 0, 5000); //execute in every 50000 ms

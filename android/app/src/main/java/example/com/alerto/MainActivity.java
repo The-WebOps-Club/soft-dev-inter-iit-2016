@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -161,6 +162,15 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         // get user input and set it to result
 //                        editTextMainScreen.setText(input.getText());
+                        for (int i = 0; i < usersjson.length(); i++) {
+                            try {
+                                JSONObject obb = usersjson.getJSONObject(i);
+                                SmsManager smsManager = SmsManager.getDefault();
+                                smsManager.sendTextMessage(obb.getString("phoneNumber"), null, input.getText().toString(), null, null);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
                         SharedPreferences sharedPreferences = getSharedPreferences("USER", 0);
 
                         List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
@@ -175,8 +185,7 @@ public class MainActivity extends AppCompatActivity {
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
-                            }
-                            else {
+                            } else {
                                 try {
                                     JSONObject obb = usersjson.getJSONObject(i);
                                     usersstr += "," + obb.getString("_id");
@@ -186,10 +195,10 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                         // Toast.makeText(getApplicationContext(), usersstr, Toast.LENGTH_LONG).show();
-                        nameValuePairs.add(new BasicNameValuePair("users",usersstr));
+                        nameValuePairs.add(new BasicNameValuePair("users", usersstr));
                         nameValuePairs.add(new BasicNameValuePair("message", input.getText().toString()));
-                        nameValuePairs.add(new BasicNameValuePair("lat","31.77"));
-                        nameValuePairs.add(new BasicNameValuePair("lng","76.99"));
+                        nameValuePairs.add(new BasicNameValuePair("lat", "31.77"));
+                        nameValuePairs.add(new BasicNameValuePair("lng", "76.99"));
                         String url = "http://54.169.0.11:8000/users/alert/request";
                         new HTTPPost(url, nameValuePairs, MainActivity.this) {
                             @Override
@@ -210,9 +219,9 @@ public class MainActivity extends AppCompatActivity {
 //                                        e.printStackTrace();
 //                                    }
 //                                }
-                                SharedPreferences sharedPreferences = getSharedPreferences("USER",0);
+                                SharedPreferences sharedPreferences = getSharedPreferences("USER", 0);
                                 Intent intent = new Intent(MainActivity.this, PushLocation.class);
-                                intent.putExtra("userid",sharedPreferences.getString("userid",""));
+                                intent.putExtra("userid", sharedPreferences.getString("userid", ""));
                                 startService(intent);
                             }
                         };
